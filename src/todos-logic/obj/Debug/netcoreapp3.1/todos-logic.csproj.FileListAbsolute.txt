@@ -1,0 +1,12 @@
+D:\VS-Development\source\repos\todos-project\src\todos-logic\bin\Debug\netcoreapp3.1\todos-logic.deps.json
+D:\VS-Development\source\repos\todos-project\src\todos-logic\bin\Debug\netcoreapp3.1\todos-logic.dll
+D:\VS-Development\source\repos\todos-project\src\todos-logic\bin\Debug\netcoreapp3.1\todos-logic.pdb
+D:\VS-Development\source\repos\todos-project\src\todos-logic\bin\Debug\netcoreapp3.1\todos-data.dll
+D:\VS-Development\source\repos\todos-project\src\todos-logic\bin\Debug\netcoreapp3.1\todos-data.pdb
+D:\VS-Development\source\repos\todos-project\src\todos-logic\obj\Debug\netcoreapp3.1\todos-logic.csprojAssemblyReference.cache
+D:\VS-Development\source\repos\todos-project\src\todos-logic\obj\Debug\netcoreapp3.1\todos-logic.AssemblyInfoInputs.cache
+D:\VS-Development\source\repos\todos-project\src\todos-logic\obj\Debug\netcoreapp3.1\todos-logic.AssemblyInfo.cs
+D:\VS-Development\source\repos\todos-project\src\todos-logic\obj\Debug\netcoreapp3.1\todos-logic.csproj.CoreCompileInputs.cache
+D:\VS-Development\source\repos\todos-project\src\todos-logic\obj\Debug\netcoreapp3.1\todos-logic.csproj.CopyComplete
+D:\VS-Development\source\repos\todos-project\src\todos-logic\obj\Debug\netcoreapp3.1\todos-logic.dll
+D:\VS-Development\source\repos\todos-project\src\todos-logic\obj\Debug\netcoreapp3.1\todos-logic.pdb

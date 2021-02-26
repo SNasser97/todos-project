@@ -1,0 +1,9 @@
+D:\VS-Development\source\repos\todos-project\src\todos-data\obj\Debug\netcoreapp3.1\todos-data.AssemblyInfoInputs.cache
+D:\VS-Development\source\repos\todos-project\src\todos-data\obj\Debug\netcoreapp3.1\todos-data.AssemblyInfo.cs
+D:\VS-Development\source\repos\todos-project\src\todos-data\obj\Debug\netcoreapp3.1\todos-data.csproj.CoreCompileInputs.cache
+D:\VS-Development\source\repos\todos-project\src\todos-data\bin\Debug\netcoreapp3.1\todos-data.deps.json
+D:\VS-Development\source\repos\todos-project\src\todos-data\bin\Debug\netcoreapp3.1\todos-data.dll
+D:\VS-Development\source\repos\todos-project\src\todos-data\bin\Debug\netcoreapp3.1\todos-data.pdb
+D:\VS-Development\source\repos\todos-project\src\todos-data\obj\Debug\netcoreapp3.1\todos-data.dll
+D:\VS-Development\source\repos\todos-project\src\todos-data\obj\Debug\netcoreapp3.1\todos-data.pdb
+D:\VS-Development\source\repos\todos-project\src\todos-data\obj\Debug\netcoreapp3.1\todos-data.csprojAssemblyReference.cache

@@ -1,0 +1,50 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v3.1",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v3.1": {
+      "todos-main/1.0.0": {
+        "dependencies": {
+          "todos-data": "1.0.0",
+          "todos-logic": "1.0.0"
+        },
+        "runtime": {
+          "todos-main.dll": {}
+        }
+      },
+      "todos-data/1.0.0": {
+        "runtime": {
+          "todos-data.dll": {}
+        }
+      },
+      "todos-logic/1.0.0": {
+        "dependencies": {
+          "todos-data": "1.0.0"
+        },
+        "runtime": {
+          "todos-logic.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "todos-main/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "todos-data/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "todos-logic/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
