@@ -17,6 +17,10 @@ namespace todos_tests.Repository
         [Fact]
         public void TodosRepositoryTakesNullDictionaryAndExpectsToThrowArgumentNullException()
         {
+            // Given I have a todos repo
+            // And I have a null todos dict dependency
+            // When I inject this null todo dict
+            // Then I expect to throw an argument null exception
             Exceptions.HandleExceptions<ArgumentNullException>(() =>
                 new InMemoryTodosRepository(null as Dictionary<Guid, Todo>, new TimestampFacade()),
                 (ex) => Assert.Equal("todos", ex.ParamName)
@@ -26,6 +30,10 @@ namespace todos_tests.Repository
         [Fact]
         public void TodosRepositoryTakesNullTimestampFacadeAndExpectsToThrowArgumentNullException()
         {
+            // Given I have a todos repo
+            // And I have a null timestamp dependency
+            // When I inject this null timestamp dependency
+            // Then I expect to throw an argument null exception
             Exceptions.HandleExceptions<ArgumentNullException>(() =>
                 new InMemoryTodosRepository(new Dictionary<Guid, Todo>(), null as TimestampFacade),
                 (ex) => Assert.Equal("timestampFacade", ex.ParamName)
