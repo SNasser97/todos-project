@@ -11,11 +11,15 @@ namespace todos_tests.Facades
         [Fact]
         public void TimestampFacadeTakesNullTimestampAndExpectsToThrowArgumentNullException()
         {
+            // Given I have a null dependency
+            // When I inject null
+            // Then I expect to throw argument null exception
             Exceptions.HandleExceptions<ArgumentNullException>(() =>
                 new TimestampFacade(null),
                 (ex) => Assert.Equal("timestamp", ex.ParamName)
             );
         }
+
         [Fact]
         public void TimestampFacadeTakesTimeStampAndCallsGetTimestampInMilisecondsExpectsToReturnALongValue()
         {
