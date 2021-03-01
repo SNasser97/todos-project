@@ -135,7 +135,7 @@ namespace todos_tests.Repository
             Guid todoId = Guid.NewGuid();
             
             // And I have a mock dict
-            var mockDictionary = new Dictionary<Guid, Todo>
+            var mockTodos = new Dictionary<Guid, Todo>
             {
                 { todoId, new Todo { Id = todoId, Name = "Clean dishes", CreatedAt = 12345, UpdatedAt = 12345 } },
                 { Guid.NewGuid(), new Todo {  Name = "Clean dishes", CreatedAt = 12345, UpdatedAt = 12345 } },
@@ -143,20 +143,20 @@ namespace todos_tests.Repository
             };
             
             // And I have a TodoRepo
-            var todosRepository = new InMemoryTodosRepository(mockDictionary, new Mock<ITimestampFacade>().Object);
+            var todosRepository = new InMemoryTodosRepository(mockTodos, new Mock<ITimestampFacade>().Object);
 
             // When I provide an id
             await todosRepository.DeleteTodoAsync(todoId);
 
             // Then I expect to delete the todo associated
-            Assert.Equal(2, mockDictionary.Values.Count);
+            Assert.Equal(2, mockTodos.Values.Count);
 
             // Verify that correct item not found
-            bool actualTodoIsEmpty = mockDictionary.Values.Any(t => t.Id != todoId);
+            bool actualTodoIsEmpty = mockTodos.Values.Any(t => t.Id != todoId);
             Assert.True(actualTodoIsEmpty);
 
             // Verify value is null
-            Todo actualTodo = mockDictionary.Values.FirstOrDefault(t => t.Id == todoId);
+            Todo actualTodo = mockTodos.Values.FirstOrDefault(t => t.Id == todoId);
             Assert.Null(actualTodo);
         }
 
@@ -169,14 +169,14 @@ namespace todos_tests.Repository
             Guid todoId = Guid.NewGuid();
 
             // And I have a mock dict
-            var mockDictionary = new Dictionary<Guid, Todo>
+            var mockTodos = new Dictionary<Guid, Todo>
             {
                 { expectedTodoId, new Todo { Id = expectedTodoId, Name = "My todo", CreatedAt = 1234, UpdatedAt = 1234, IsComplete = true } },
                 { todoId , new Todo { Id = todoId, Name = "My  other todo", CreatedAt = 12334, UpdatedAt = 12334, IsComplete = false } },
             };
 
             // And I have a todo repo
-            var todosRepository = new InMemoryTodosRepository(mockDictionary, new TimestampFacade());
+            var todosRepository = new InMemoryTodosRepository(mockTodos, new TimestampFacade());
 
             // When I provide the expected todo Id
             Todo actualTodo = await todosRepository.GetTodoAsync(expectedTodoId);
@@ -185,10 +185,10 @@ namespace todos_tests.Repository
             Assert.NotNull(actualTodo);
 
             Assert.Equal(expectedTodoId, actualTodo.Id);
-            Assert.Equal(mockDictionary[expectedTodoId].Name, actualTodo.Name);
-            Assert.Equal(mockDictionary[expectedTodoId].CreatedAt, actualTodo.CreatedAt);
-            Assert.Equal(mockDictionary[expectedTodoId].UpdatedAt, actualTodo.UpdatedAt);
-            Assert.Equal(mockDictionary[expectedTodoId].IsComplete, actualTodo.IsComplete);
+            Assert.Equal(mockTodos[expectedTodoId].Name, actualTodo.Name);
+            Assert.Equal(mockTodos[expectedTodoId].CreatedAt, actualTodo.CreatedAt);
+            Assert.Equal(mockTodos[expectedTodoId].UpdatedAt, actualTodo.UpdatedAt);
+            Assert.Equal(mockTodos[expectedTodoId].IsComplete, actualTodo.IsComplete);
         }
 
         [Fact]
