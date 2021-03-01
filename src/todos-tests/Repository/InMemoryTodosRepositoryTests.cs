@@ -224,5 +224,89 @@ namespace todos_tests.Repository
                 Assert.Equal(expectedTodo.IsComplete, actualTodo.IsComplete);
             }
         }
+
+        // ! Negative test
+        [Fact]
+        public async Task TodosRepositoryUpdateTodoAsyncTakesInvalidTodoAndExpectsToReturnAnEmptyGuid()
+        {
+            // Given I have a id
+            Guid todoId = Guid.NewGuid();
+
+            // And I have a invalid todo to updated
+            Guid invalidId = Guid.NewGuid();
+            var invalidTodo = new Todo { Id = invalidId, Name = "clean dishes", CreatedAt = 34354, UpdatedAt = 34354, IsComplete = true };
+
+            // And I have a mock todo
+            var mockTodos = new Dictionary<Guid, Todo>
+            {
+                { todoId, new Todo { Id = todoId, Name = "my todo", CreatedAt = 12345, UpdatedAt = 1234}}
+            };
+            
+            // And I have a todo repo
+            var todosRepository = new InMemoryTodosRepository(mockTodos, new TimestampFacade());
+
+            // When I provide this invalidTodo
+            Guid actualId = await todosRepository.UpdateTodoAsync(invalidTodo); 
+
+            // Then I expect an empty guid
+            Assert.True(actualId == Guid.Empty);
+        }
+
+        [Fact]
+        public async Task TodosRepositoryGetTodosAsyncInvokesAndExpectsToReturnAnEmptyList()
+        {
+            // Given I a todo repo
+            var todosRepository = new InMemoryTodosRepository(new Dictionary<Guid, Todo>(), new TimestampFacade());
+            
+            // When I call GetTodosAsync
+            IEnumerable<Todo> actualTodos = await todosRepository.GetTodosAsync();
+
+            // Then I expect to return an empty list
+            Assert.Empty(actualTodos);
+        }
+
+        [Fact]
+        public async Task TodosRepositoryGetTodoAsyncTakesInvalidGuidAndExpectsToReturnNull()
+        {
+            // Given I have mock todos
+            var mockTodos = new Dictionary<Guid, Todo>
+            {
+                { Guid.NewGuid(), new Todo { Name = "my todo", CreatedAt = 1234, UpdatedAt = 1234} }
+            };
+            
+            // And I have a todosRepo
+            var todosRepository = new InMemoryTodosRepository(mockTodos, new TimestampFacade());
+
+            // When I provide an invalid id
+            Todo actualTodo = await todosRepository.GetTodoAsync(Guid.NewGuid());
+
+            // Then  I expect to an empty todo
+            Assert.Null(actualTodo);
+        }
+
+        [Fact]
+        public async Task TodosRepositoryDeleteTodosAsyncTakesInvalidGuidAndExpectsToNotDeleteTodo()
+        {
+            // Given I have an todo id
+            Guid todoId = Guid.NewGuid();
+
+            // And I have mock todos
+            var mockTodos = new Dictionary<Guid, Todo>
+            {
+                { Guid.NewGuid(), new Todo() },
+                { Guid.NewGuid(), new Todo() },
+                { Guid.NewGuid(), new Todo() },
+            };
+            
+            // And I have a todo repo
+            var todosRepository = new InMemoryTodosRepository(mockTodos, new TimestampFacade());
+
+            // When I provide this id
+            await todosRepository.DeleteTodoAsync(todoId);
+
+            // Then I expect my mockTodo values to not be deleted
+            Assert.NotEmpty(mockTodos);
+            Assert.Equal(3, mockTodos.Values.Count);
+        }
     }
 }
