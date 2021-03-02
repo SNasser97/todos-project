@@ -125,7 +125,7 @@ namespace todos_tests.Repository
             Assert.Equal(expectedTodo.Id, actualTodo.Id);
             Assert.True(actualTodo.IsComplete);
             Assert.Equal(expectedTodo.CreatedAt, actualTodo.CreatedAt);
-            Assert.True(expectedTodo.UpdatedAt < actualTodo.UpdatedAt);
+            Assert.NotEqual(expectedTodo.UpdatedAt, actualTodo.UpdatedAt);
 
             // Verify dictionary count
             IEnumerable<Todo> actualTodoValues = mockTodos.Values;
