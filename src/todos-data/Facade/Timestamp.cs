@@ -4,11 +4,11 @@ namespace todos_data.Facade
 {
     public interface ITimestamp
     {
-        long TimestampInMiliseconds { get; set; }
+        long TimestampInMiliseconds { get; }
     }
 
     public class Timestamp : ITimestamp
     {
-        public long TimestampInMiliseconds { get; set; } = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+        public long TimestampInMiliseconds { get => DateTimeOffset.Now.ToUnixTimeMilliseconds(); }
     }
 }
