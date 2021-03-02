@@ -25,8 +25,10 @@ namespace todos_data.Repository
 
         public async Task<Guid> CreateTodoAsync(Todo todo)
         {
-            todo.CreatedAt = this.timestampFacade.GetTimestampInMilliseconds();
-            todo.UpdatedAt = this.timestampFacade.GetTimestampInMilliseconds();
+
+            long newTimestamp = this.timestampFacade.GetTimestampInMilliseconds();
+            todo.CreatedAt = newTimestamp;
+            todo.UpdatedAt = newTimestamp;
 
             this.todos.Add(todo.Id, todo);
 
