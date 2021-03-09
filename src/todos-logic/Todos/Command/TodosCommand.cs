@@ -21,6 +21,11 @@ namespace todos_logic.Todos.Command
                 throw new ArgumentNullException(nameof(todo));
             }
             
+            if (string.IsNullOrWhiteSpace(todo.Name))
+            {
+                throw new Exception("todo name was empty");
+            }
+            
             Todo todoToCreate = todo.ToTodoData();
 
             Guid createdTodoId = await this.TodosRepository.CreateTodoAsync(todoToCreate);

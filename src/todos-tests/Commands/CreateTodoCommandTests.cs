@@ -56,5 +56,42 @@ namespace todos_tests.Commands
             // Verify assertions
             mockTodosRepository.Verify(s => s.CreateTodoAsync(It.IsAny<Todo>()), Times.Once);
         }
+
+        [Fact]
+        public async Task TodosCommandCreateTodosAsyncTakesEmptyCreateTodoCommandExpectsToThrowArgumentNullException()
+        {
+            // Given I have a mock todos repo
+            var mockTodosRepository = new Mock<ITodosRepository>();
+
+            // And I have an instance of todos command
+            var todosCommand = new TodosCommand(mockTodosRepository.Object);
+
+            // When I provide an empty CreateTodoCommand
+            // Then I expect to throw ArgumentNulLException
+            await Exceptions.HandleExceptionsAsync<ArgumentNullException>(async () => 
+                await todosCommand.CreateTodoAsync(null),
+                (ex) => Assert.Equal("todo", ex.ParamName)
+            );
+        }
+
+        [Fact]
+        public async Task TodosCommandCreateTodosAsyncTakesCreateTodoCommandWithEmptyNameAndExpectsToThrowAnException()
+        {
+            // Given I have a CreateCommandTodo
+            var newTodo = new CreateTodoCommand();
+
+            //  And I have a mock todos repo
+            var mockTodosRepository = new Mock<ITodosRepository>();
+
+            // And I have a todos command
+            var todosCommand = new TodosCommand(mockTodosRepository.Object);
+
+            //  When I provide this CreateCommandTodo
+            //  Then I expect an exception
+            await Exceptions.HandleExceptionsAsync<Exception>(async () => 
+                await todosCommand.CreateTodoAsync(newTodo),
+                (ex) => Assert.Equal("todo name was empty", ex.Message)
+            );
+        }
     }
 }
