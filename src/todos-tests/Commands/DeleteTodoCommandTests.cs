@@ -23,7 +23,7 @@ namespace todos_tests.Commands
 
             // And I have a todos command
             var todosCommand = new TodosCommand(mockTodosRepository.Object);
-            mockTodosRepository.Setup(s => s.GetTodoAsync(todoId)).ReturnsAsync(new Todo());
+            mockTodosRepository.Setup(s => s.GetTodoAsync(todoId)).ReturnsAsync(new Todo { Name = "My Todo" });
             mockTodosRepository.Setup(s => s.DeleteTodoAsync(todoId));
 
             //  When I provide this todo id
@@ -32,6 +32,24 @@ namespace todos_tests.Commands
             //  Then I expect to delete the associated todo
             mockTodosRepository.Verify(s => s.GetTodoAsync(It.IsAny<Guid>()), Times.Once);
             mockTodosRepository.Verify(s => s.DeleteTodoAsync(It.IsAny<Guid>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task TodosCommandDeleteTodosAsyncTakesEmptyGuidAndExpectsToThrowArgumentNullException()
+        {
+            //  Given I have an empty id
+            // And I have a mock todos repo
+            var mockTodosRepository = new Mock<ITodosRepository>();
+
+            // And I have a todos command
+            var todosCommand = new TodosCommand(mockTodosRepository.Object);
+            
+            //  When I provide an empty id
+            //  Then I expect to throw an ArgumentNullException
+            await Exceptions.HandleExceptionsAsync<ArgumentNullException>(async () =>
+                await todosCommand.DeleteTodoAsync(Guid.Empty),
+                (ex) => Assert.Equal("id", ex.ParamName)
+            );
         }
     }
 }

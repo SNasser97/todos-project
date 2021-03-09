@@ -35,6 +35,11 @@ namespace todos_logic.Todos.Command
 
         public async Task DeleteTodoAsync(Guid id)
         {
+            if (id == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+            
             Todo doesExist = await this.TodosRepository.GetTodoAsync(id);
 
             await this.TodosRepository.DeleteTodoAsync(doesExist.Id); 
