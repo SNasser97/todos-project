@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using todos_data;
 using todos_data.Repository;
 
 namespace todos_logic.Todos.Command
@@ -19,8 +20,12 @@ namespace todos_logic.Todos.Command
             {
                 throw new ArgumentNullException(nameof(todo));
             }
+            
+            Todo todoToCreate = todo.ToTodoData();
 
-            return await Task.FromResult(Guid.Empty);
+            Guid createdTodoId = await this.TodosRepository.CreateTodoAsync(todoToCreate);
+
+            return await Task.FromResult(createdTodoId);
         }
 
         public Task DeleteTodoAsync(Guid id)
