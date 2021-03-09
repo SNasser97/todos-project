@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Moq;
 using todos_data;
-using todos_data.Facade;
 using todos_data.Repository;
+using todos_data.TimestampModel;
 using todos_tests.Utility;
 using Xunit;
 
