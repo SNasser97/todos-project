@@ -51,5 +51,29 @@ namespace todos_tests.Commands
                 (ex) => Assert.Equal("id", ex.ParamName)
             );
         }
+
+        [Fact]
+        public async Task TodosCommandDeleteTodosAsyncTakesGuidAndExpectsExceptionMessageTodoNotFound()
+        {
+            // Given I have a todo id
+            Guid todoId = Guid.NewGuid();
+
+            // And I have a mock todos repo
+            var mockTodosRepository = new Mock<ITodosRepository>();
+
+            // And I have a todos command
+            var todosCommand = new TodosCommand(mockTodosRepository.Object);
+            mockTodosRepository.Setup(s => s.GetTodoAsync(todoId)).ReturnsAsync(null as Todo);
+
+            // When I provide this todoId
+            // Then I expect an exception of Todo Not Found
+            await Exceptions.HandleExceptionsAsync<Exception>(async () => 
+                await todosCommand.DeleteTodoAsync(todoId),
+                (ex) => Assert.Equal("todo not found", ex.Message)
+            );
+
+            mockTodosRepository.Verify(s => s.GetTodoAsync(It.IsAny<Guid>()), Times.Once);
+            mockTodosRepository.Verify(s => s.DeleteTodoAsync(It.IsAny<Guid>()), Times.Never);
+        }
     }
 }

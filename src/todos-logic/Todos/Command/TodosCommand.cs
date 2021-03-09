@@ -39,10 +39,15 @@ namespace todos_logic.Todos.Command
             {
                 throw new ArgumentNullException(nameof(id));
             }
-            
-            Todo doesExist = await this.TodosRepository.GetTodoAsync(id);
 
-            await this.TodosRepository.DeleteTodoAsync(doesExist.Id); 
+            Todo todo = await this.TodosRepository.GetTodoAsync(id);
+            
+            if (todo == null)
+            {
+                throw new Exception("todo not found");
+            }
+
+            await this.TodosRepository.DeleteTodoAsync(todo.Id); 
         }
 
         public Task<Guid> UpdateTodoAsync(UpdateTodoCommand todo)
