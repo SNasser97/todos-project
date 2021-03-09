@@ -33,9 +33,11 @@ namespace todos_logic.Todos.Command
             return await Task.FromResult(createdTodoId);
         }
 
-        public Task DeleteTodoAsync(Guid id)
+        public async Task DeleteTodoAsync(Guid id)
         {
-            throw new NotImplementedException();
+            Todo doesExist = await this.TodosRepository.GetTodoAsync(id);
+
+            await this.TodosRepository.DeleteTodoAsync(doesExist.Id); 
         }
 
         public Task<Guid> UpdateTodoAsync(UpdateTodoCommand todo)
