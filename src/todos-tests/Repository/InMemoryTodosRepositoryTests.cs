@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Moq;
 using todos_data;
-using todos_data.Facade;
 using todos_data.Repository;
+using todos_data.TimestampModel;
 using todos_tests.Utility;
 using Xunit;
 
@@ -22,7 +22,7 @@ namespace todos_tests.Repository
             // When I inject this null todo dict
             // Then I expect to throw an argument null exception
             Exceptions.HandleExceptions<ArgumentNullException>(() =>
-                new InMemoryTodosRepository(null as Dictionary<Guid, Todo>, new TimestampFacade()),
+                new InMemoryTodosRepository(null, new Timestamp()),
                 (ex) => Assert.Equal("todos", ex.ParamName)
             );
         }
@@ -35,8 +35,8 @@ namespace todos_tests.Repository
             // When I inject this null timestamp dependency
             // Then I expect to throw an argument null exception
             Exceptions.HandleExceptions<ArgumentNullException>(() =>
-                new InMemoryTodosRepository(new Dictionary<Guid, Todo>(), null as TimestampFacade),
-                (ex) => Assert.Equal("timestampFacade", ex.ParamName)
+                new InMemoryTodosRepository(new Dictionary<Guid, Todo>(), null),
+                (ex) => Assert.Equal("timestamp", ex.ParamName)
             );
         }
 
@@ -47,7 +47,7 @@ namespace todos_tests.Repository
             var todo = new Todo { Name = "Fix pipe" };
 
             //And I have a timestampFacade
-            var mockTimestampFacade = new Mock<ITimestampFacade>();
+            var mockTimestamp = new Mock<ITimestamp>();
 
             // And I have a mock dict
             var mockTodos = new Dictionary<Guid, Todo>
@@ -58,8 +58,8 @@ namespace todos_tests.Repository
             };
 
             //And I have a todo repo
-            var todosRepository = new InMemoryTodosRepository(mockTodos, mockTimestampFacade.Object);
-            mockTimestampFacade.Setup(s => s.GetTimestampInMilliseconds()).Returns(1625123333);
+            var todosRepository = new InMemoryTodosRepository(mockTodos, mockTimestamp.Object);
+            mockTimestamp.SetupGet(s => s.TimestampInMiliseconds).Returns(1000000);
 
             //When I create this todo
             Guid actualTodoId = await todosRepository.CreateTodoAsync(todo);
@@ -69,17 +69,14 @@ namespace todos_tests.Repository
 
             Todo actualTodo = mockTodos[actualTodoId];
             Assert.NotNull(actualTodo);
-            Assert.Equal(mockTodos[actualTodoId].Id, actualTodoId);
-            Assert.Equal(mockTodos[actualTodoId].Name, actualTodo.Name);
-            Assert.Equal(mockTodos[actualTodoId].IsComplete, actualTodo.IsComplete);
+            Assert.True(actualTodoId != Guid.Empty);
+            Assert.Equal(actualTodoId, actualTodo.Id);
+            Assert.Equal("Fix pipe", actualTodo.Name);
+            Assert.False(actualTodo.IsComplete);
 
             // Verify that expected/actual match timestamp
-            Assert.Equal(mockTodos[actualTodoId].CreatedAt, actualTodo.CreatedAt);
-            Assert.Equal(mockTodos[actualTodoId].UpdatedAt, actualTodo.UpdatedAt);
-
-            // Verify that Create/Update math on same type
-            Assert.Equal(mockTodos[actualTodoId].CreatedAt, mockTodos[actualTodoId].UpdatedAt);
-            Assert.Equal(actualTodo.CreatedAt, actualTodo.UpdatedAt);
+            Assert.Equal(1000000, actualTodo.CreatedAt);
+            Assert.Equal(1000000, actualTodo.UpdatedAt);
             
             // Verify dictionary count
             IEnumerable<Todo> actualTodoValues = mockTodos.Values;
@@ -87,7 +84,7 @@ namespace todos_tests.Repository
             Assert.Equal(4, actualTodoValues.Count());
 
             // Verify timestamp mock was called twice
-            mockTimestampFacade.Verify(s => s.GetTimestampInMilliseconds(), Times.Exactly(2));
+            mockTimestamp.Verify(s => s.TimestampInMiliseconds, Times.Once);
         }
 
         [Fact]
@@ -99,7 +96,7 @@ namespace todos_tests.Repository
             var expectedTodo = new Todo { Id = todoId, Name = "Fix pipe", IsComplete = true, CreatedAt = 123456, UpdatedAt = 123456 };
 
             //And I have a timestampFacade
-            var mockTimestampFacade = new Mock<ITimestampFacade>();
+            var mockTimestamp = new Mock<ITimestamp>();
 
             // And I have a mock dict
             var mockTodos = new Dictionary<Guid, Todo>
@@ -109,8 +106,8 @@ namespace todos_tests.Repository
             };
 
             //And I have a todo repo
-            var todosRepository = new InMemoryTodosRepository(mockTodos, mockTimestampFacade.Object);
-            mockTimestampFacade.Setup(s => s.GetTimestampInMilliseconds()).Returns(1000000);
+            var todosRepository = new InMemoryTodosRepository(mockTodos, mockTimestamp.Object);
+            mockTimestamp.SetupGet(s => s.TimestampInMiliseconds).Returns(1000000);
 
             //When I create this todo
             Guid actualTodoId = await todosRepository.UpdateTodoAsync(expectedTodo);
@@ -125,7 +122,7 @@ namespace todos_tests.Repository
             Assert.Equal(expectedTodo.Id, actualTodo.Id);
             Assert.True(actualTodo.IsComplete);
             Assert.Equal(expectedTodo.CreatedAt, actualTodo.CreatedAt);
-            Assert.True(expectedTodo.UpdatedAt < actualTodo.UpdatedAt);
+            Assert.NotEqual(expectedTodo.UpdatedAt, actualTodo.UpdatedAt);
 
             // Verify dictionary count
             IEnumerable<Todo> actualTodoValues = mockTodos.Values;
@@ -133,7 +130,7 @@ namespace todos_tests.Repository
             Assert.Equal(2, actualTodoValues.Count());
 
             // Verify timestamp mock was called twice
-            mockTimestampFacade.Verify(s => s.GetTimestampInMilliseconds(), Times.Once);
+            mockTimestamp.Verify(s => s.TimestampInMiliseconds, Times.Once);
         }
 
         [Fact]
@@ -151,7 +148,7 @@ namespace todos_tests.Repository
             };
             
             // And I have a TodoRepo
-            var todosRepository = new InMemoryTodosRepository(mockTodos, new Mock<ITimestampFacade>().Object);
+            var todosRepository = new InMemoryTodosRepository(mockTodos, new Mock<ITimestamp>().Object);
 
             // When I provide an id
             await todosRepository.DeleteTodoAsync(todoId);
@@ -184,7 +181,7 @@ namespace todos_tests.Repository
             };
 
             // And I have a todo repo
-            var todosRepository = new InMemoryTodosRepository(mockTodos, new TimestampFacade());
+            var todosRepository = new InMemoryTodosRepository(mockTodos, new Timestamp());
 
             // When I provide the expected todo Id
             Todo actualTodo = await todosRepository.GetTodoAsync(expectedTodoId);
@@ -212,7 +209,7 @@ namespace todos_tests.Repository
 
             // And I have a todo repo
 
-            var todosRepository = new InMemoryTodosRepository(mockTodos, new TimestampFacade());
+            var todosRepository = new InMemoryTodosRepository(mockTodos, new Timestamp());
             
             // When I call GetTodosAsync
             IEnumerable<Todo> actualTodosList = await todosRepository.GetTodosAsync();
@@ -251,7 +248,7 @@ namespace todos_tests.Repository
             };
             
             // And I have a todo repo
-            var todosRepository = new InMemoryTodosRepository(mockTodos, new TimestampFacade());
+            var todosRepository = new InMemoryTodosRepository(mockTodos, new Timestamp());
 
             // When I provide this invalidTodo
             Guid actualId = await todosRepository.UpdateTodoAsync(invalidTodo); 
@@ -264,7 +261,7 @@ namespace todos_tests.Repository
         public async Task TodosRepositoryGetTodosAsyncInvokesAndExpectsToReturnAnEmptyList()
         {
             // Given I a todo repo
-            var todosRepository = new InMemoryTodosRepository(new Dictionary<Guid, Todo>(), new TimestampFacade());
+            var todosRepository = new InMemoryTodosRepository(new Dictionary<Guid, Todo>(), new Timestamp());
             
             // When I call GetTodosAsync
             IEnumerable<Todo> actualTodos = await todosRepository.GetTodosAsync();
@@ -283,7 +280,7 @@ namespace todos_tests.Repository
             };
             
             // And I have a todosRepo
-            var todosRepository = new InMemoryTodosRepository(mockTodos, new TimestampFacade());
+            var todosRepository = new InMemoryTodosRepository(mockTodos, new Timestamp());
 
             // When I provide an invalid id
             Todo actualTodo = await todosRepository.GetTodoAsync(Guid.NewGuid());
@@ -306,8 +303,9 @@ namespace todos_tests.Repository
                 { Guid.NewGuid(), new Todo() },
             };
             
+
             // And I have a todo repo
-            var todosRepository = new InMemoryTodosRepository(mockTodos, new TimestampFacade());
+            var todosRepository = new InMemoryTodosRepository(mockTodos, new Mock<ITimestamp>().Object);
 
             // When I provide this id
             await todosRepository.DeleteTodoAsync(todoId);
