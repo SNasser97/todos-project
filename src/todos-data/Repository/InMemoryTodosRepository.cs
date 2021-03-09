@@ -10,23 +10,23 @@ namespace todos_data.Repository
     public class InMemoryTodosRepository : ITodosRepository
     {
         private readonly IDictionary<Guid, Todo> todos;
-        private readonly ITimestampFacade timestampFacade;
+        private readonly ITimestamp timestamp;
 
-        public InMemoryTodosRepository() : this(new ConcurrentDictionary<Guid, Todo>(), new TimestampFacade())
+        public InMemoryTodosRepository() : this(new ConcurrentDictionary<Guid, Todo>(), new Timestamp())
         {
           
         }
 
-        public InMemoryTodosRepository(IDictionary<Guid, Todo> todos, ITimestampFacade timestampFacade)
+        public InMemoryTodosRepository(IDictionary<Guid, Todo> todos, ITimestamp timestamp)
         {
             this.todos = todos ?? throw new ArgumentNullException(nameof(todos));
-            this.timestampFacade = timestampFacade ?? throw new ArgumentNullException(nameof(timestampFacade));
+            this.timestamp = timestamp ?? throw new ArgumentNullException(nameof(timestamp));
         }
 
         public async Task<Guid> CreateTodoAsync(Todo todo)
         {
 
-            long newTimestamp = this.timestampFacade.GetTimestampInMilliseconds();
+            long newTimestamp = this.timestamp.TimestampInMiliseconds;
             todo.CreatedAt = newTimestamp;
             todo.UpdatedAt = newTimestamp;
 
@@ -61,7 +61,7 @@ namespace todos_data.Repository
             {
                 // Only update timestamp prop
                 existingTodo.Name = todo.Name;
-                existingTodo.UpdatedAt = this.timestampFacade.GetTimestampInMilliseconds();
+                existingTodo.UpdatedAt = this.timestamp.TimestampInMiliseconds;
                 existingTodo.IsComplete = todo.IsComplete;
 
                 return await Task.FromResult(existingTodo.Id);
