@@ -69,17 +69,14 @@ namespace todos_tests.Repository
 
             Todo actualTodo = mockTodos[actualTodoId];
             Assert.NotNull(actualTodo);
-            Assert.Equal(mockTodos[actualTodoId].Id, actualTodoId);
-            Assert.Equal(mockTodos[actualTodoId].Name, actualTodo.Name);
-            Assert.Equal(mockTodos[actualTodoId].IsComplete, actualTodo.IsComplete);
+            Assert.True(actualTodoId != Guid.Empty);
+            Assert.Equal(actualTodoId, actualTodo.Id);
+            Assert.Equal("Fix pipe", actualTodo.Name);
+            Assert.False(actualTodo.IsComplete);
 
             // Verify that expected/actual match timestamp
-            Assert.Equal(mockTodos[actualTodoId].CreatedAt, actualTodo.CreatedAt);
-            Assert.Equal(mockTodos[actualTodoId].UpdatedAt, actualTodo.UpdatedAt);
-
-            // Verify that Create/Update math on same type
-            Assert.Equal(mockTodos[actualTodoId].CreatedAt, mockTodos[actualTodoId].UpdatedAt);
-            Assert.Equal(actualTodo.CreatedAt, actualTodo.UpdatedAt);
+            Assert.Equal(1000000, actualTodo.CreatedAt);
+            Assert.Equal(1000000, actualTodo.UpdatedAt);
             
             // Verify dictionary count
             IEnumerable<Todo> actualTodoValues = mockTodos.Values;
@@ -306,8 +303,9 @@ namespace todos_tests.Repository
                 { Guid.NewGuid(), new Todo() },
             };
             
+
             // And I have a todo repo
-            var todosRepository = new InMemoryTodosRepository(mockTodos, new Timestamp());
+            var todosRepository = new InMemoryTodosRepository(mockTodos, new Mock<ITimestamp>().Object);
 
             // When I provide this id
             await todosRepository.DeleteTodoAsync(todoId);
