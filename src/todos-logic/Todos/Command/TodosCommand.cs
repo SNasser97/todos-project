@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using todos_data;
 using todos_data.Repository;
 
 namespace todos_logic.Todos.Command
@@ -19,13 +20,34 @@ namespace todos_logic.Todos.Command
             {
                 throw new ArgumentNullException(nameof(todo));
             }
+            
+            if (string.IsNullOrWhiteSpace(todo.Name))
+            {
+                throw new Exception("todo name was empty");
+            }
+            
+            Todo todoToCreate = todo.ToTodoData();
 
-            return await Task.FromResult(Guid.Empty);
+            Guid createdTodoId = await this.TodosRepository.CreateTodoAsync(todoToCreate);
+
+            return await Task.FromResult(createdTodoId);
         }
 
-        public Task DeleteTodoAsync(Guid id)
+        public async Task DeleteTodoAsync(Guid id)
         {
-            throw new NotImplementedException();
+            if (id == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+
+            Todo todo = await this.TodosRepository.GetTodoAsync(id);
+            
+            if (todo == null)
+            {
+                throw new Exception("todo not found");
+            }
+
+            await this.TodosRepository.DeleteTodoAsync(todo.Id); 
         }
 
         public Task<Guid> UpdateTodoAsync(UpdateTodoCommand todo)
