@@ -60,6 +60,24 @@ namespace todos_tests.Commands
         }
 
         [Fact]
+        public async Task TodosCommandUpdateTodosAsyncTakeEmptyGuidInUpdateCommandAndExpectsExceptionMessageIdIsEmpty()
+        {
+            // Given I have a null update command
+            // And I have mock todos repo
+            var mockTodos = new Mock<ITodosRepository>();
+
+            // And I have a todosCommand
+            var todosCommand = new TodosCommand(mockTodos.Object);
+
+            // When I provide an empty update todo command
+            // Then I expect to throw an ArgumentNullException
+            await Exceptions.HandleExceptionsAsync<Exception>(async () =>
+                await todosCommand.UpdateTodoAsync(new UpdateTodoCommand { Id = Guid.Empty, Name = "My todo", IsComplete = true}),
+                (ex) => Assert.Equal("todo Id is empty", ex.Message)
+            );
+        }
+
+        [Fact]
         public async Task TodosCommandUpdateTodosAsyncTakeEmptyNameInUpdateCommandAndExpectsExceptionMessageTodoNameIsEmpty()
         {
             // Given I have a null update command
