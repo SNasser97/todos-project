@@ -8,7 +8,7 @@ namespace todos_logic.Todos.Command
     public class TodosCommand : ITodosCommand
     {
         public ITodosRepository TodosRepository { get; set; }
-        
+
         public TodosCommand(ITodosRepository todosRepository)
         {
             this.TodosRepository = todosRepository ?? throw new ArgumentNullException(nameof(todosRepository));
@@ -20,12 +20,12 @@ namespace todos_logic.Todos.Command
             {
                 throw new ArgumentNullException(nameof(todo));
             }
-            
+
             if (string.IsNullOrWhiteSpace(todo.Name))
             {
                 throw new Exception("todo name was empty");
             }
-            
+
             Todo todoToCreate = todo.ToTodoData();
 
             Guid createdTodoId = await this.TodosRepository.CreateTodoAsync(todoToCreate);
@@ -41,24 +41,34 @@ namespace todos_logic.Todos.Command
             }
 
             Todo todo = await this.TodosRepository.GetTodoAsync(id);
-            
+
             if (todo == null)
             {
                 throw new Exception("todo not found");
             }
 
-            await this.TodosRepository.DeleteTodoAsync(todo.Id); 
+            await this.TodosRepository.DeleteTodoAsync(todo.Id);
         }
 
         public async Task<Guid> UpdateTodoAsync(UpdateTodoCommand todo)
         {
+            if (todo == null)
+            {
+                throw new ArgumentNullException(nameof(todo));
+            }
+
+            if (string.IsNullOrWhiteSpace(todo.Name))
+            {
+                throw new Exception("todo name was empty");
+            }
+            
             Todo todoData = todo.ToTodoData();
 
             Todo doesExist = await this.TodosRepository.GetTodoAsync(todoData.Id);
 
             Guid todoId = await this.TodosRepository.UpdateTodoAsync(todoData);
 
-            return todoId; 
+            return todoId;
         }
     }
 }
