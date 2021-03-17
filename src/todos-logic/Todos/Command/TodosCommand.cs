@@ -50,9 +50,15 @@ namespace todos_logic.Todos.Command
             await this.TodosRepository.DeleteTodoAsync(todo.Id); 
         }
 
-        public Task<Guid> UpdateTodoAsync(UpdateTodoCommand todo)
+        public async Task<Guid> UpdateTodoAsync(UpdateTodoCommand todo)
         {
-            throw new NotImplementedException();
+            Todo todoData = todo.ToTodoData();
+
+            Todo doesExist = await this.TodosRepository.GetTodoAsync(todoData.Id);
+
+            Guid todoId = await this.TodosRepository.UpdateTodoAsync(todoData);
+
+            return todoId; 
         }
     }
 }
