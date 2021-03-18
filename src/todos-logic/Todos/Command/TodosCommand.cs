@@ -8,7 +8,7 @@ namespace todos_logic.Todos.Command
     public class TodosCommand : ITodosCommand
     {
         public ITodosRepository TodosRepository { get; set; }
-        
+
         public TodosCommand(ITodosRepository todosRepository)
         {
             this.TodosRepository = todosRepository ?? throw new ArgumentNullException(nameof(todosRepository));
@@ -20,12 +20,12 @@ namespace todos_logic.Todos.Command
             {
                 throw new ArgumentNullException(nameof(todo));
             }
-            
+
             if (string.IsNullOrWhiteSpace(todo.Name))
             {
                 throw new Exception("todo name was empty");
             }
-            
+
             Todo todoToCreate = todo.ToTodoData();
 
             Guid createdTodoId = await this.TodosRepository.CreateTodoAsync(todoToCreate);
@@ -41,18 +41,44 @@ namespace todos_logic.Todos.Command
             }
 
             Todo todo = await this.TodosRepository.GetTodoAsync(id);
-            
+
             if (todo == null)
             {
                 throw new Exception("todo not found");
             }
 
-            await this.TodosRepository.DeleteTodoAsync(todo.Id); 
+            await this.TodosRepository.DeleteTodoAsync(todo.Id);
         }
 
-        public Task<Guid> UpdateTodoAsync(UpdateTodoCommand todo)
+        public async Task<Guid> UpdateTodoAsync(UpdateTodoCommand todo)
         {
-            throw new NotImplementedException();
+            if (todo == null)
+            {
+                throw new ArgumentNullException(nameof(todo));
+            }
+
+            if (string.IsNullOrWhiteSpace(todo.Name))
+            {
+                throw new Exception("todo name was empty");
+            }
+
+            if (todo.Id == Guid.Empty)
+            {
+                throw new Exception("todo Id is empty");
+            }
+
+            Todo foundTodo = await this.TodosRepository.GetTodoAsync(todo.Id);
+
+            if (foundTodo == null)
+            {
+                throw new Exception("todo not found");
+            }
+
+            Todo todoData = todo.ToTodoData();
+
+            Guid todoId = await this.TodosRepository.UpdateTodoAsync(todoData);
+
+            return todoId;
         }
     }
 }
