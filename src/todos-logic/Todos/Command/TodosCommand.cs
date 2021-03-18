@@ -61,15 +61,20 @@ namespace todos_logic.Todos.Command
             {
                 throw new Exception("todo name was empty");
             }
-            
+
             if (todo.Id == Guid.Empty)
             {
                 throw new Exception("todo Id is empty");
             }
-            
-            Todo todoData = todo.ToTodoData();
 
-            Todo doesExist = await this.TodosRepository.GetTodoAsync(todoData.Id);
+            Todo foundTodo = await this.TodosRepository.GetTodoAsync(todo.Id);
+
+            if (foundTodo == null)
+            {
+                throw new Exception("todo not found");
+            }
+
+            Todo todoData = todo.ToTodoData();
 
             Guid todoId = await this.TodosRepository.UpdateTodoAsync(todoData);
 
