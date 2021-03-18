@@ -51,7 +51,7 @@ namespace todos_tests.Commands
             // And I have a todosCommand
             var todosCommand = new TodosCommand(mockTodos.Object);
 
-            // When I provide an empty update todo command
+            // When I provide a null update todo command
             // Then I expect to throw an ArgumentNullException
             await Exceptions.HandleExceptionsAsync<ArgumentNullException>(async () =>
                 await todosCommand.UpdateTodoAsync(null),
@@ -62,17 +62,19 @@ namespace todos_tests.Commands
         [Fact]
         public async Task TodosCommandUpdateTodosAsyncTakeEmptyGuidInUpdateCommandAndExpectsExceptionMessageIdIsEmpty()
         {
-            // Given I have a null update command
+            // Given I have a update command with empty guid
+            var updateTodoCommand = new UpdateTodoCommand { Id = Guid.Empty, Name = "My todo", IsComplete = true };
+
             // And I have mock todos repo
             var mockTodos = new Mock<ITodosRepository>();
 
             // And I have a todosCommand
             var todosCommand = new TodosCommand(mockTodos.Object);
 
-            // When I provide an empty update todo command
+            // When I provide an update todo command with empty guid
             // Then I expect to throw an ArgumentNullException
             await Exceptions.HandleExceptionsAsync<Exception>(async () =>
-                await todosCommand.UpdateTodoAsync(new UpdateTodoCommand { Id = Guid.Empty, Name = "My todo", IsComplete = true}),
+                await todosCommand.UpdateTodoAsync(updateTodoCommand),
                 (ex) => Assert.Equal("todo Id is empty", ex.Message)
             );
         }
@@ -81,16 +83,18 @@ namespace todos_tests.Commands
         public async Task TodosCommandUpdateTodosAsyncTakeEmptyNameInUpdateCommandAndExpectsExceptionMessageTodoNameIsEmpty()
         {
             // Given I have a null update command
+            var updateTodoCommand = new UpdateTodoCommand { Id = Guid.NewGuid(), Name = "", IsComplete = true };
+
             // And I have mock todos repo
             var mockTodos = new Mock<ITodosRepository>();
 
             // And I have a todosCommand
             var todosCommand = new TodosCommand(mockTodos.Object);
 
-            // When I provide an empty update todo command
+            // When I provide a update todo command with an empty name
             // Then I expect to throw an ArgumentNullException
             await Exceptions.HandleExceptionsAsync<Exception>(async () =>
-                await todosCommand.UpdateTodoAsync(new UpdateTodoCommand { Id = Guid.NewGuid(), Name = "", IsComplete = true}),
+                await todosCommand.UpdateTodoAsync(updateTodoCommand),
                 (ex) => Assert.Equal("todo name was empty", ex.Message)
             );
         }
