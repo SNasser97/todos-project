@@ -3,7 +3,7 @@ using todos_logic.Todos.Command;
 using todos_tests.Utility;
 using Xunit;
 
-namespace todos_tests.Commands
+namespace todos_tests.Command
 {
     public class TodosCommandDependencyTests
     {
