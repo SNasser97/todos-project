@@ -64,5 +64,25 @@ namespace todos_tests.Query
             //  Then I expect an Exception todo not found
             mockTodoRepo.Verify(s => s.GetTodoAsync(It.IsAny<Guid>()), Times.Once);
         }
+
+        [Fact]
+        public async Task TodosQueryGetTodoAsyncTakesEmptyGuidAndExpectsArgumentNullException()
+        {
+            //  Given I have a guid
+            Guid emptyGuid = Guid.Empty;
+
+            // And I have a mock TodoRepo
+            var mockTodoRepo = new Mock<ITodosRepository>();
+
+            // And I have an instance of todosQuery
+            var todosQuery = new TodosQuery(mockTodoRepo.Object);
+
+            //  When I provide this guid
+            //  Then I expect an ArgumentNullException
+            await Exceptions.HandleExceptionsAsync<ArgumentNullException>(async () =>
+                await todosQuery.GetTodoAsync(emptyGuid),
+                (ex) => Assert.Equal("id", ex.ParamName)
+            );
+        }
     }
 }

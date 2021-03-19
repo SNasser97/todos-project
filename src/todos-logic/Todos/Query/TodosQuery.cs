@@ -17,6 +17,11 @@ namespace todos_logic.Todos.Query
 
         public async Task<Todo> GetTodoAsync(Guid id)
         {
+            if (id == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+
             Todo foundTodo = await this.todosRepository.GetTodoAsync(id);
 
             if (foundTodo == null)
