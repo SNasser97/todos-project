@@ -32,9 +32,11 @@ namespace todos_logic.Todos.Query
             return foundTodo;
         }
 
-        public Task<IEnumerable<Todo>> GetTodosAsync()
+        public async Task<IEnumerable<Todo>> GetTodosAsync()
         {
-            throw new NotImplementedException();
+            IEnumerable<Todo> todos = await this.todosRepository.GetTodosAsync();
+
+            return todos;
         }
     }
 }
