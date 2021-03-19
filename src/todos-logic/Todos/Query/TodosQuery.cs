@@ -15,9 +15,11 @@ namespace todos_logic.Todos.Query
             this.todosRepository = todosRepository ?? throw new ArgumentNullException(nameof(todosRepository));
         }
 
-        public Task<Todo> GetTodoAsync(Guid id)
+        public async Task<Todo> GetTodoAsync(Guid id)
         {
-            throw new NotImplementedException();
+            Todo foundTodo = await this.todosRepository.GetTodoAsync(id);
+
+            return foundTodo;
         }
 
         public Task<IEnumerable<Todo>> GetTodosAsync()
