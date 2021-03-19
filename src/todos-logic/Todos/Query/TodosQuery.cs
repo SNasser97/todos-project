@@ -19,6 +19,11 @@ namespace todos_logic.Todos.Query
         {
             Todo foundTodo = await this.todosRepository.GetTodoAsync(id);
 
+            if (foundTodo == null)
+            {
+                throw new Exception("todo not found");
+            }
+
             return foundTodo;
         }
 

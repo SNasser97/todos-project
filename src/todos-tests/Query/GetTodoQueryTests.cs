@@ -4,6 +4,7 @@ using Moq;
 using todos_data;
 using todos_data.Repository;
 using todos_logic.Todos.Query;
+using todos_tests.Utility;
 using Xunit;
 
 namespace todos_tests.Query
@@ -38,6 +39,29 @@ namespace todos_tests.Query
             Assert.Equal(expectedTodo.CreatedAt, actualTodo.CreatedAt);
             Assert.Equal(expectedTodo.UpdatedAt, actualTodo.UpdatedAt);
 
+            mockTodoRepo.Verify(s => s.GetTodoAsync(It.IsAny<Guid>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task TodosQueryGetTodoAsyncTakesGuidAndExpectsExceptionMessageTodoNotFound()
+        {
+            //  Given I have a guid
+            var todoId = Guid.NewGuid();
+
+            // And I have a mock TodoRepo
+            var mockTodoRepo = new Mock<ITodosRepository>();
+
+            // And I have an instance of todosQuery
+            var todosQuery = new TodosQuery(mockTodoRepo.Object);
+            mockTodoRepo.Setup(s => s.GetTodoAsync(It.IsAny<Guid>())).ReturnsAsync(null as Todo);
+
+            //  When I provide this guid
+            await Exceptions.HandleExceptionsAsync<Exception>(async () =>
+                await todosQuery.GetTodoAsync(todoId),
+                (ex) => Assert.Equal("todo not found", ex.Message)
+            );
+            
+            //  Then I expect an Exception todo not found
             mockTodoRepo.Verify(s => s.GetTodoAsync(It.IsAny<Guid>()), Times.Once);
         }
     }
