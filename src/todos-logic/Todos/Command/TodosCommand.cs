@@ -26,7 +26,7 @@ namespace todos_logic.Todos.Command
                 throw new Exception("todo name was empty");
             }
 
-            Todo todoToCreate = todo.ToTodoData();
+            Todo todoToCreate = todo.ToDataObject();
 
             Guid createdTodoId = await this.TodosRepository.CreateTodoAsync(todoToCreate);
 
@@ -74,7 +74,7 @@ namespace todos_logic.Todos.Command
                 throw new Exception("todo not found");
             }
 
-            Todo todoData = todo.ToTodoData();
+            Todo todoData = todo.ToDataObject();
 
             Guid todoId = await this.TodosRepository.UpdateTodoAsync(todoData);
 

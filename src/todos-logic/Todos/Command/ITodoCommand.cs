@@ -5,7 +5,7 @@ namespace todos_logic.Todos.Command
 {
     public interface ITodoCommand<T>
     {
-        T ToTodoData();
+        T ToDataObject();
     }
 
     // Update

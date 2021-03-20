@@ -8,7 +8,7 @@ using todos_logic.Todos.Command;
 using todos_tests.Utility;
 using Xunit;
 
-namespace todos_tests.Commands
+namespace todos_tests.Command
 {
     public class CreateTodoCommandTests
     {
@@ -35,7 +35,7 @@ namespace todos_tests.Commands
         {
             // Given I have a CreateTodoCommand
             var newTodo = new CreateTodoCommand { Name = "My todo" };
-            
+
             // And I have an expected Id
             Guid expectedId = Guid.NewGuid();
 
@@ -45,7 +45,7 @@ namespace todos_tests.Commands
             // And I have a todosCommand instance
             var todosCommand = new TodosCommand(mockTodosRepository.Object);
             mockTodosRepository.Setup(s => s.CreateTodoAsync(It.IsAny<Todo>())).ReturnsAsync(expectedId);
-            
+
             // When I provide the CreateTodoCommand
             Guid actualTodoId = await todosCommand.CreateTodoAsync(newTodo);
 
@@ -68,7 +68,7 @@ namespace todos_tests.Commands
 
             // When I provide an empty CreateTodoCommand
             // Then I expect to throw ArgumentNulLException
-            await Exceptions.HandleExceptionsAsync<ArgumentNullException>(async () => 
+            await Exceptions.HandleExceptionsAsync<ArgumentNullException>(async () =>
                 await todosCommand.CreateTodoAsync(null),
                 (ex) => Assert.Equal("todo", ex.ParamName)
             );
@@ -88,7 +88,7 @@ namespace todos_tests.Commands
 
             //  When I provide this CreateCommandTodo
             //  Then I expect an exception
-            await Exceptions.HandleExceptionsAsync<Exception>(async () => 
+            await Exceptions.HandleExceptionsAsync<Exception>(async () =>
                 await todosCommand.CreateTodoAsync(newTodo),
                 (ex) => Assert.Equal("todo name was empty", ex.Message)
             );

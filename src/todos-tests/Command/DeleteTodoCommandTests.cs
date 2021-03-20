@@ -8,7 +8,7 @@ using todos_logic.Todos.Command;
 using todos_tests.Utility;
 using Xunit;
 
-namespace todos_tests.Commands
+namespace todos_tests.Command
 {
     public class DeleteTodoCommandTests
     {
@@ -16,7 +16,7 @@ namespace todos_tests.Commands
         public async Task TodosCommandDeleteTodosAsyncTakesGuidAndExpectsToDeleteTodo()
         {
             //  Given I have a todo id
-            Guid todoId = Guid.NewGuid();        
+            Guid todoId = Guid.NewGuid();
 
             // And I have a mock todos repo
             var mockTodosRepository = new Mock<ITodosRepository>();
@@ -43,7 +43,7 @@ namespace todos_tests.Commands
 
             // And I have a todos command
             var todosCommand = new TodosCommand(mockTodosRepository.Object);
-            
+
             //  When I provide an empty id
             //  Then I expect to throw an ArgumentNullException
             await Exceptions.HandleExceptionsAsync<ArgumentNullException>(async () =>
@@ -67,7 +67,7 @@ namespace todos_tests.Commands
 
             // When I provide this todoId
             // Then I expect an exception of Todo Not Found
-            await Exceptions.HandleExceptionsAsync<Exception>(async () => 
+            await Exceptions.HandleExceptionsAsync<Exception>(async () =>
                 await todosCommand.DeleteTodoAsync(todoId),
                 (ex) => Assert.Equal("todo not found", ex.Message)
             );
