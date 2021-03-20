@@ -14,7 +14,7 @@ namespace todos_data.Repository
 
         public InMemoryTodosRepository() : this(new ConcurrentDictionary<Guid, Todo>(), new Timestamp())
         {
-          
+
         }
 
         public InMemoryTodosRepository(IDictionary<Guid, Todo> todos, ITimestamp timestamp)

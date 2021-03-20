@@ -40,7 +40,7 @@ namespace todos_logic.Todos.Query
             {
                 throw new Exception("todos not found");
             }
-            
+
             return todos;
         }
     }

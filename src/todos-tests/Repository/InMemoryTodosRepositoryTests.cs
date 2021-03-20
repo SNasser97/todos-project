@@ -77,7 +77,7 @@ namespace todos_tests.Repository
             // Verify that expected/actual match timestamp
             Assert.Equal(1000000, actualTodo.CreatedAt);
             Assert.Equal(1000000, actualTodo.UpdatedAt);
-            
+
             // Verify dictionary count
             IEnumerable<Todo> actualTodoValues = mockTodos.Values;
             Assert.NotEmpty(actualTodoValues);
@@ -138,7 +138,7 @@ namespace todos_tests.Repository
         {
             // Given I have a todo Id
             Guid todoId = Guid.NewGuid();
-            
+
             // And I have a mock dict
             var mockTodos = new Dictionary<Guid, Todo>
             {
@@ -146,7 +146,7 @@ namespace todos_tests.Repository
                 { Guid.NewGuid(), new Todo {  Name = "Clean dishes", CreatedAt = 12345, UpdatedAt = 12345 } },
                 { Guid.NewGuid(), new Todo { Name = "Clean dishes", CreatedAt = 12345, UpdatedAt = 12345 } },
             };
-            
+
             // And I have a TodoRepo
             var todosRepository = new InMemoryTodosRepository(mockTodos, new Mock<ITimestamp>().Object);
 
@@ -170,7 +170,7 @@ namespace todos_tests.Repository
         {
             // Given I have an Id
             Guid expectedTodoId = Guid.NewGuid();
-            
+
             Guid todoId = Guid.NewGuid();
 
             // And I have a mock dict
@@ -210,7 +210,7 @@ namespace todos_tests.Repository
             // And I have a todo repo
 
             var todosRepository = new InMemoryTodosRepository(mockTodos, new Timestamp());
-            
+
             // When I call GetTodosAsync
             IEnumerable<Todo> actualTodosList = await todosRepository.GetTodosAsync();
 
@@ -246,12 +246,12 @@ namespace todos_tests.Repository
             {
                 { todoId, new Todo { Id = todoId, Name = "my todo", CreatedAt = 12345, UpdatedAt = 1234}}
             };
-            
+
             // And I have a todo repo
             var todosRepository = new InMemoryTodosRepository(mockTodos, new Timestamp());
 
             // When I provide this invalidTodo
-            Guid actualId = await todosRepository.UpdateTodoAsync(invalidTodo); 
+            Guid actualId = await todosRepository.UpdateTodoAsync(invalidTodo);
 
             // Then I expect an empty guid
             Assert.True(actualId == Guid.Empty);
@@ -262,7 +262,7 @@ namespace todos_tests.Repository
         {
             // Given I a todo repo
             var todosRepository = new InMemoryTodosRepository(new Dictionary<Guid, Todo>(), new Timestamp());
-            
+
             // When I call GetTodosAsync
             IEnumerable<Todo> actualTodos = await todosRepository.GetTodosAsync();
 
@@ -278,7 +278,7 @@ namespace todos_tests.Repository
             {
                 { Guid.NewGuid(), new Todo { Name = "my todo", CreatedAt = 1234, UpdatedAt = 1234} }
             };
-            
+
             // And I have a todosRepo
             var todosRepository = new InMemoryTodosRepository(mockTodos, new Timestamp());
 
@@ -302,7 +302,7 @@ namespace todos_tests.Repository
                 { Guid.NewGuid(), new Todo() },
                 { Guid.NewGuid(), new Todo() },
             };
-            
+
 
             // And I have a todo repo
             var todosRepository = new InMemoryTodosRepository(mockTodos, new Mock<ITimestamp>().Object);

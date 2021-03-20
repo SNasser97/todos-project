@@ -102,6 +102,6 @@ namespace todos_tests.Query
                 await todosQuery.GetTodosAsync(),
                 (ex) => Assert.Equal("todos not found", ex.Message)
             );
-        }          
+        }
     }
 }
