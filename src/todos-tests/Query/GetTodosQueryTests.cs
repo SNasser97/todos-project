@@ -7,6 +7,7 @@ using Moq;
 using todos_data;
 using todos_data.Repository;
 using todos_logic.Todos.Query;
+using todos_tests.Utility;
 using Xunit;
 
 namespace todos_tests.Query
@@ -55,5 +56,52 @@ namespace todos_tests.Query
                 Assert.Equal(expectedTodo.UpdatedAt, actualTodo.UpdatedAt);
             }
         }
+
+        [Fact]
+        public async Task TodosQueryGetTodosAsyncExpectsToReturnAnEmptyListOfTodos()
+        {
+            // Given I have an expected todos list
+            var expectedTodosList = new List<Todo>();
+
+            // And I have a mock todos repo
+            var mockTodoRepo = new Mock<ITodosRepository>();
+
+            // And I have an instance of todosQuery
+            var todosQuery = new TodosQuery(mockTodoRepo.Object);
+            mockTodoRepo.Setup(s => s.GetTodosAsync()).ReturnsAsync(expectedTodosList);
+
+            // When I call GetTodosAsync
+            IEnumerable<Todo> actualTodosList = await todosQuery.GetTodosAsync();
+
+            // Then I expect a list of todos
+            Assert.Empty(actualTodosList);
+
+            // Verify
+            int actualTodosListLength = actualTodosList.Count();
+            int expectedTodosListLength = expectedTodosList.Count;
+
+            Assert.Equal(expectedTodosListLength, actualTodosListLength);
+        }
+
+        [Fact]
+        public async Task TodosQueryGetTodosAsyncExpectsToExceptionMessageTodosDoNotExist()
+        {
+            // Given I have an null todos list
+            var expectedTodosList = null as List<Todo>;
+
+            // And I have a mock todos repo
+            var mockTodoRepo = new Mock<ITodosRepository>();
+
+            // And I have an instance of todosQuery
+            var todosQuery = new TodosQuery(mockTodoRepo.Object);
+            mockTodoRepo.Setup(s => s.GetTodosAsync()).ReturnsAsync(expectedTodosList);
+
+            // When I call GetTodosAsync
+            // Then I expect an exception of todos do not exist
+            await Exceptions.HandleExceptionsAsync<Exception>(async () =>
+                await todosQuery.GetTodosAsync(),
+                (ex) => Assert.Equal("todos not found", ex.Message)
+            );
+        }          
     }
 }

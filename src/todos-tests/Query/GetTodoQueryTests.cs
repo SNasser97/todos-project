@@ -60,7 +60,7 @@ namespace todos_tests.Query
                 await todosQuery.GetTodoAsync(todoId),
                 (ex) => Assert.Equal("todo not found", ex.Message)
             );
-            
+
             //  Then I expect an Exception todo not found
             mockTodoRepo.Verify(s => s.GetTodoAsync(It.IsAny<Guid>()), Times.Once);
         }

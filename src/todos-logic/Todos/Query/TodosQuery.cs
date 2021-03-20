@@ -36,6 +36,11 @@ namespace todos_logic.Todos.Query
         {
             IEnumerable<Todo> todos = await this.todosRepository.GetTodosAsync();
 
+            if (todos == null)
+            {
+                throw new Exception("todos not found");
+            }
+            
             return todos;
         }
     }
